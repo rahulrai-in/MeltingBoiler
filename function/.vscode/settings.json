@@ -1,5 +1,5 @@
 {
-    "azureFunctions.deploySubpath": "MeltingBoiler.SafeguardFunction/bin/Release/netcoreapp2.1/publish",
+    "azureFunctions.deploySubpath": "function/bin/Release/netcoreapp2.1/publish",
     "azureFunctions.projectLanguage": "C#",
     "azureFunctions.projectRuntime": "~2",
     "debug.internalConsoleOptions": "neverOpen",

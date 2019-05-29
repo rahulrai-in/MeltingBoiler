@@ -1,12 +1,12 @@
-﻿using MeltingBoiler.SafeguardFunction.Core;
-using MeltingBoiler.SafeguardFunction.Triggers;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
+using SafeguardFunction.Core;
+using SafeguardFunction.Triggers;
 
-namespace MeltingBoiler.SafeguardFunction.Orchestrators
+namespace SafeguardFunction.Orchestrators
 {
     public static class SafetySequenceOrchestrator
     {
@@ -15,10 +15,10 @@ namespace MeltingBoiler.SafeguardFunction.Orchestrators
         {
             try
             {
-                var (key, value) = context.GetInput<KeyValuePair<string, double>>();
+                var(key, value) = context.GetInput<KeyValuePair<string, double>>();
                 var deviceId = new EntityId(nameof(DeviceMonitor), key);
                 var loc = context.IsLocked(out var details);
-                using (context.LockAsync(deviceId))
+                using(context.LockAsync(deviceId))
                 {
                     await context.CallEntityAsync(deviceId, Constants.ActorOperationAddRecord,
                         new KeyValuePair<DateTime, double>(context.CurrentUtcDateTime, value));

@@ -1,4 +1,4 @@
-﻿namespace MeltingBoiler.SafeguardFunction.Core
+﻿namespace SafeguardFunction.Core
 {
     public static class Constants
     {

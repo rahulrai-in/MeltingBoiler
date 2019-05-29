@@ -1,7 +1,7 @@
-﻿using Microsoft.Azure.WebJobs;
-using System;
+﻿using System;
+using Microsoft.Azure.WebJobs;
 
-namespace MeltingBoiler.SafeguardFunction.Core
+namespace SafeguardFunction.Core
 {
     public static class Policies
     {

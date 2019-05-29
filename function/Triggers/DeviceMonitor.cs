@@ -1,12 +1,12 @@
-﻿using Microsoft.Azure.Devices;
-using Microsoft.Azure.WebJobs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Azure.Devices;
+using Microsoft.Azure.WebJobs;
 
-namespace MeltingBoiler.SafeguardFunction.Triggers
+namespace SafeguardFunction.Triggers
 {
     public static class DeviceMonitor
     {
