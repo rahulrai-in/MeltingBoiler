@@ -1,0 +1,1 @@
+https://platform.deloitte.com.au/articles/azure-durable-functions-approval-workflow-with-slack

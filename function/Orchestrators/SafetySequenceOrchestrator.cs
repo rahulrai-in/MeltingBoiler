@@ -15,10 +15,9 @@ namespace SafeguardFunction.Orchestrators
         {
             try
             {
-                var(key, value) = context.GetInput<KeyValuePair<string, double>>();
+                var (key, value) = context.GetInput<KeyValuePair<string, double>>();
                 var deviceId = new EntityId(nameof(DeviceMonitor), key);
-                var loc = context.IsLocked(out var details);
-                using(context.LockAsync(deviceId))
+                using (context.LockAsync(deviceId))
                 {
                     await context.CallEntityAsync(deviceId, Constants.ActorOperationAddRecord,
                         new KeyValuePair<DateTime, double>(context.CurrentUtcDateTime, value));
@@ -26,6 +25,7 @@ namespace SafeguardFunction.Orchestrators
                     if (isMelting)
                     {
                         // safety sequence
+                        await context.CallActivityWithRetryAsync(nameof(SendApprovalRequest), Policies.Retry, context.InstanceId);
                         var automaticApprovalTask = context.CallActivityWithRetryAsync<bool>(nameof(AutoRequestApproval),
                             Policies.Retry,
                             new KeyValuePair<string, double>(key, value));
@@ -33,8 +33,7 @@ namespace SafeguardFunction.Orchestrators
                             context.WaitForExternalEvent(Constants.ManualApproval, TimeSpan.FromMinutes(2), true);
                         if (humanInterventionTask == await Task.WhenAny(humanInterventionTask, automaticApprovalTask))
                         {
-                            await context.CallEntityAsync(deviceId, Constants.ActorOperationSendInstruction,
-                                humanInterventionTask.Result);
+                            await context.CallEntityAsync(deviceId, Constants.ActorOperationSendInstruction, humanInterventionTask.Result);
                         }
                         else
                         {

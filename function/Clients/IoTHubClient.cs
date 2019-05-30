@@ -19,7 +19,7 @@ namespace SafeguardFunction.Clients
             string deviceId,
             ILogger logger)
         {
-            var instanceId = await client.StartNewAsync(nameof(SafetySequenceOrchestrator), deviceId, new KeyValuePair<string, double>(deviceId, temperature));
+            var instanceId = await client.StartNewAsync(nameof(SafetySequenceOrchestrator), new KeyValuePair<string, double>(deviceId, temperature));
             logger.LogInformation($"Started orchestration with ID = '{instanceId}'.");
             return await client.WaitForCompletionOrCreateCheckStatusResponseAsync(request, instanceId);
         }

@@ -47,7 +47,6 @@ namespace SafeguardFunction.Triggers
 
         private static bool IsMelting(IDurableEntityContext context)
         {
-            return true;
             var recordedValues = context.GetState<Queue<KeyValuePair<DateTime, double>>>() ?? new Queue<KeyValuePair<DateTime, double>>();
             return recordedValues.Any(kvp => kvp.Value >= 1000) || recordedValues.Average(kvp => kvp.Value) > 800 && recordedValues.Count == 5;
         }

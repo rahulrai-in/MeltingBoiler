@@ -9,6 +9,6 @@
 
         public const string ManualApproval = nameof(ManualApproval);
         public const string Post = nameof(Post);
-        public const string ManualApprovalRoute = "approval/{instanceId}";
+        public const string ManualApprovalRoute = "approval";
     }
 }
