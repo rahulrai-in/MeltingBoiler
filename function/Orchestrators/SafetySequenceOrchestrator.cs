@@ -25,15 +25,18 @@ namespace SafeguardFunction.Orchestrators
                     if (isMelting)
                     {
                         // safety sequence
-                        await context.CallActivityWithRetryAsync(nameof(SendApprovalRequest), Policies.Retry, context.InstanceId);
-                        var automaticApprovalTask = context.CallActivityWithRetryAsync<bool>(nameof(AutoRequestApproval),
+                        await context.CallActivityWithRetryAsync(nameof(SendApprovalRequest), Policies.Retry,
+                            context.InstanceId);
+                        var automaticApprovalTask = context.CallActivityWithRetryAsync<bool>(
+                            nameof(AutoRequestApproval),
                             Policies.Retry,
                             new KeyValuePair<string, double>(key, value));
                         var humanInterventionTask =
                             context.WaitForExternalEvent(Constants.ManualApproval, TimeSpan.FromMinutes(2), true);
                         if (humanInterventionTask == await Task.WhenAny(humanInterventionTask, automaticApprovalTask))
                         {
-                            await context.CallEntityAsync(deviceId, Constants.ActorOperationSendInstruction, humanInterventionTask.Result);
+                            await context.CallEntityAsync(deviceId, Constants.ActorOperationSendInstruction,
+                                humanInterventionTask.Result);
                         }
                         else
                         {

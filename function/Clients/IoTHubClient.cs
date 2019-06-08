@@ -1,27 +1,28 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SafeguardFunction.Orchestrators;
+using IoTHubTrigger = Microsoft.Azure.WebJobs.EventHubTriggerAttribute;
 
 namespace SafeguardFunction.Clients
 {
     public static class IoTHubClient
     {
         [FunctionName(nameof(IoTHubClient))]
-        //public static async Task RunClient([IoTHubTrigger("messages/events", Connection = "")]EventData message, [OrchestrationClient] DurableOrchestrationClient starter, string functionName, ILogger log)
-        public static async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "start/{temperature}/{deviceId}")] HttpRequestMessage request,
+        public static async Task RunClient(
+            [IoTHubTrigger("messages/events", Connection = "IoTHubTriggerConnection")]
+            EventData message,
             [OrchestrationClient] IDurableOrchestrationClient client,
-            double temperature,
-            string deviceId,
             ILogger logger)
         {
-            var instanceId = await client.StartNewAsync(nameof(SafetySequenceOrchestrator), new KeyValuePair<string, double>(deviceId, temperature));
+            var messageResult = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(message.Body.Array));
+            var instanceId = await client.StartNewAsync(nameof(SafetySequenceOrchestrator),
+                new KeyValuePair<string, double>("myboilercontroller", (double)messageResult.CurrentTemperature));
             logger.LogInformation($"Started orchestration with ID = '{instanceId}'.");
-            return await client.WaitForCompletionOrCreateCheckStatusResponseAsync(request, instanceId);
         }
     }
 }
