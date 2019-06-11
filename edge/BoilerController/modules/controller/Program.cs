@@ -45,16 +45,23 @@ namespace controller
         /// </summary>
         static async Task Init()
         {
-            MqttTransportSettings mqttSetting = new MqttTransportSettings(TransportType.Mqtt_Tcp_Only);
-            ITransportSettings[] settings = { mqttSetting };
+            var amqpTransportSettings = new AmqpTransportSettings(TransportType.Amqp_Tcp_Only);
+            ITransportSettings[] settings = { amqpTransportSettings };
 
             // Open a connection to the Edge runtime
             ModuleClient ioTHubModuleClient = await ModuleClient.CreateFromEnvironmentAsync(settings);
             await ioTHubModuleClient.OpenAsync();
             Console.WriteLine("IoT Hub module client initialized.");
 
+            // monitor connection
+            ioTHubModuleClient.SetConnectionStatusChangesHandler((status, reason) =>
+            {
+                Console.WriteLine(status);
+                Console.WriteLine(reason);
+            });
+
             // Register callback to be called when a message is received by the module
-            await ioTHubModuleClient.SetInputMessageHandlerAsync("command", CommandHandler, ioTHubModuleClient);
+            await ioTHubModuleClient.SetMethodHandlerAsync("command", CommandHandler, ioTHubModuleClient);
             await PublishMessages(ioTHubModuleClient);
         }
 
@@ -64,7 +71,7 @@ namespace controller
         /// <param name="message">Message sent as command.</param>
         /// <param name="userContext">Module client.</param>
         /// <returns></returns>
-        private static async Task<MessageResponse> CommandHandler(Message message, object userContext)
+        private static async Task<MethodResponse> CommandHandler(MethodRequest methodRequest, object userContext)
         {
             var moduleClient = userContext as ModuleClient;
             if (moduleClient == null)
@@ -72,9 +79,8 @@ namespace controller
                 throw new InvalidOperationException(nameof(userContext));
             }
 
-            byte[] messageBytes = message.GetBytes();
-            string messageString = Encoding.UTF8.GetString(messageBytes);
-            switch (messageString.ToLowerInvariant())
+            var cmdArg = JsonConvert.DeserializeObject<CommandArgument>(methodRequest.DataAsJson);
+            switch (cmdArg.Command.ToLowerInvariant())
             {
                 case "normal":
                     minTemperature = 100;
@@ -95,7 +101,8 @@ namespace controller
             }
 
             isReset = true;
-            return await Task.FromResult(MessageResponse.Completed);
+            var methodResponse = new MethodResponse(Encoding.UTF8.GetBytes("{\"status\": \"ok\"}"), 200);
+            return await Task.FromResult(methodResponse);
         }
 
         /// <summary>
