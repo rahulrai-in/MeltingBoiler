@@ -1,1 +1,4 @@
 https://platform.deloitte.com.au/articles/azure-durable-functions-approval-workflow-with-slack
+
+
+ssh -p 443 -o ServerAliveInterval=60 -R 80:localhost:7071 serveo.net

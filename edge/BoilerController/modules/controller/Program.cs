@@ -123,14 +123,14 @@ namespace controller
                 {
                     counter += 10;
                     await SendMessage();
-                    await Task.Delay(TimeSpan.FromSeconds(2));
+                    await Task.Delay(TimeSpan.FromSeconds(30));
                 }
 
                 while (counter > minTemperature && !isReset)
                 {
                     counter -= 10;
                     await SendMessage();
-                    await Task.Delay(TimeSpan.FromSeconds(2));
+                    await Task.Delay(TimeSpan.FromSeconds(30));
                 }
 
                 if (isReset)

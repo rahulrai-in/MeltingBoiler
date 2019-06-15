@@ -17,7 +17,7 @@ namespace SafeguardFunction.Orchestrators
             {
                 var (key, value) = context.GetInput<KeyValuePair<string, double>>();
                 var deviceId = new EntityId(nameof(DeviceMonitor), key);
-                using (context.LockAsync(deviceId))
+                using (await context.LockAsync(deviceId))
                 {
                     await context.CallEntityAsync(deviceId, Constants.ActorOperationAddRecord,
                         new KeyValuePair<DateTime, double>(context.CurrentUtcDateTime, value));

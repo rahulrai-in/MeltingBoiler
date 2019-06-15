@@ -21,7 +21,7 @@ namespace SafeguardFunction.Clients
         {
             var messageResult = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(message.Body.Array));
             var instanceId = await client.StartNewAsync(nameof(SafetySequenceOrchestrator),
-                new KeyValuePair<string, double>("myboilercontroller", (double)messageResult.CurrentTemperature));
+                new KeyValuePair<string, double>(message.SystemProperties["iothub-connection-device-id"].ToString(), (double)messageResult.CurrentTemperature));
             logger.LogInformation($"Started orchestration with ID = '{instanceId}'.");
         }
     }

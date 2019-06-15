@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace SafeguardFunction.Triggers
@@ -67,12 +68,15 @@ namespace SafeguardFunction.Triggers
             if (context.GetInput<bool>())
             {
                 var serviceClient = ServiceClient.CreateFromConnectionString(Environment.GetEnvironmentVariable("DeviceConnectionString"));
-                var cloudToDeviceMethod = new CloudToDeviceMethod("command");
-                cloudToDeviceMethod.SetPayloadJson("shutdown");
-                var response = await serviceClient.InvokeDeviceMethodAsync("myboilercontroller", cloudToDeviceMethod);
+                var cloudToDeviceMethod = new CloudToDeviceMethod("command")
+                {
+                    ConnectionTimeout = TimeSpan.FromSeconds(5),
+                    ResponseTimeout = TimeSpan.FromSeconds(5)
+                };
+                cloudToDeviceMethod.SetPayloadJson(JsonConvert.SerializeObject(new { command = "shutdown" }));
+                var response = await serviceClient.InvokeDeviceMethodAsync("myboilercontroller", "controller", cloudToDeviceMethod);
                 var jsonResult = response.GetPayloadAsJson();
                 _logger.LogInformation($"Device response: {jsonResult}");
-                // https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-direct-methods
             }
         }
     }
