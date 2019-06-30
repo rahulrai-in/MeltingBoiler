@@ -6,6 +6,7 @@ namespace controller
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices.Client;
+    using Microsoft.Azure.Devices.Client.Transport.Mqtt;
     using Newtonsoft.Json;
 
     class Program
@@ -119,14 +120,14 @@ namespace controller
                 {
                     counter += 10;
                     await SendMessage();
-                    await Task.Delay(TimeSpan.FromSeconds(30));
+                    await Task.Delay(TimeSpan.FromSeconds(5));
                 }
 
                 while (counter > minTemperature && !isReset)
                 {
                     counter -= 10;
                     await SendMessage();
-                    await Task.Delay(TimeSpan.FromSeconds(30));
+                    await Task.Delay(TimeSpan.FromSeconds(5));
                 }
 
                 if (isReset)
