@@ -13,10 +13,8 @@ namespace SafeguardFunction.Triggers
         [FunctionName(nameof(SendApprovalRequest))]
         public static async Task Run([ActivityTrigger] string instanceId, ILogger logger)
         {
-            // Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME");
             var approvalRequestUrl =
                 Environment.GetEnvironmentVariable("Slack:ApprovalUrl", EnvironmentVariableTarget.Process);
-            // string approvalMessageTemplate = Environment.GetEnvironmentVariable("Slack:ApprovalMessageTemplate", EnvironmentVariableTarget.Process);
             var approvalMessageTemplate =
                 "{\"text\":\"*Alert!!* Simulated Sensor is reporting critical temperatures.\",\"attachments\":[{\"text\":\"Shut down *Boiler1*?\",\"fallback\":\"You are unable to choose an option\",\"callback_id\":\"" +
                 instanceId +

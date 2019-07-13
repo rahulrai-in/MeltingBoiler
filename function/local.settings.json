@@ -1,0 +1,10 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=durfnstorage;AccountKey=9uBQ9h4ZAl51FJ+vY4LRubVjiogDjVjJXhNlUkmifVFdKdvwPn2kmlsGDVgD5OkyMjsKGoW9PH1FKxOTtdZi7Q==;EndpointSuffix=core.windows.net",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "DeviceConnectionString": "HostName=meltingboiler-ih.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=HTC0YNFVqDheXg0t/S8hfy4UPbknxv0u1rngZXnyc2E=",
+    "IoTHubTriggerConnection": "Endpoint=sb://ihsuprodbyres020dednamespace.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=HTC0YNFVqDheXg0t/S8hfy4UPbknxv0u1rngZXnyc2E=;EntityPath=iothub-ehub-meltingboi-1695655-b25e9e1b66",
+    "Slack:ApprovalUrl": "https://hooks.slack.com/services/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"
+  }
+}
